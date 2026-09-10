@@ -30,7 +30,31 @@ server.get('/produtos/ordenados', (req, res) => {
     });
 });
 
-const PORT = 3025;
+server.get('/produtos/:id', (req, res) => {
+    const{id} = req.params;
+    const sql = 'SELECT * FROM PRODUTO WHERE id_produto = ?';
+
+    connection.query(sql, [id], (erro, resultados) => {
+        if(erro){
+            return res.status(500).json({ erro: erro.message });
+        }
+        return res.json(resultados);
+    });
+});
+
+server.get('/produtos/busca/:nome', (req, res) => {
+    const sql = 'SELECT * FROM PRODUTO WHERE NOME LIKE ?';
+    const termoBusca = '%' + req.params.nome + '%';
+
+    connection.query(sql, [termoBusca], (erro, resultados) => {
+        if(erro){
+            return res.status(500).json({ erro: erro.message });
+        }
+        return res.json(resultados);
+    });
+});
+
+const PORT = 3025;  
 
 
 server.listen(PORT, () => {
